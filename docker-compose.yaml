@@ -1,36 +1,38 @@
-version: "3.5"
+version: '3.5'
 
 services:
   api01: &api
     # Lembre-se de que seu serviço HTTP deve estar hospedado num repositório
     # publicamente acessível! Ex.: hub.docker.com
-    image: ana/minha-api-matadora:latest
+    build:
+      context: .
+      target: dev
+      dockerfile: Dockerfile
     hostname: api01
-    environment:
-      - DB_HOSTNAME=db
-    
+    volumes:
+      - ./src:/app/src
     # Não é necessário expor qualquer porta além da porta do load balancer,
     # mas é comum as pessoas o fazerem para testarem suas APIs e conectarem
     # ao banco de dados na fase de desenvolvimento.
+    env_file:
+      - .env
     ports:
-      - "8081:8080"
+      - '3001:${API_PORT}'
     depends_on:
       - db
     deploy:
       resources:
         limits:
-          cpus: "0.6"
-          memory: "200MB"
+          cpus: '0.6'
+          memory: '200MB'
 
   api02:
     # Essa sintaxe reusa o que foi declarado em 'api01'.
-    <<: *api 
+    <<: *api
     hostname: api02
-    environment:
-      - DB_HOSTNAME=db
     ports:
-      - "8082:8080"
- 
+      - '3002:${API_PORT}'
+
   nginx:
     image: nginx:latest
     volumes:
@@ -39,25 +41,27 @@ services:
       - api01
       - api02
     ports:
-        # Obrigatório expor/usar a porta 9999 no load balancer!
-      - "9999:9999" 
+      # Obrigatório expor/usar a porta 9999 no load balancer!
+      - '9999:9999'
     deploy:
       resources:
         limits:
-          cpus: "0.17"
-          memory: "10MB"
+          cpus: '0.17'
+          memory: '10MB'
 
   db:
     image: postgres:latest
-    hostname: db
+    restart: always
+    hostname: ${DATABASE_HOSTNAME}
     environment:
-      - POSTGRES_PASSWORD=123
-      - POSTGRES_USER=admin
-      - POSTGRES_DB=rinha
+      - POSTGRES_PASSWORD=${DATABASE_PASSWORD}
+      - POSTGRES_USER=${DATABASE_USER}
+      - POSTGRES_DB=${DATABASE_NAME}
     ports:
-      - "5432:5432"
+      - '${DATABASE_PORT}:${DATABASE_PORT}'
     volumes:
       - ./script.sql:/docker-entrypoint-initdb.d/script.sql
+      - pgdata:/var/lib/postgresql/data
     deploy:
       resources:
         limits:
@@ -65,8 +69,8 @@ services:
           # aqui declarados é de 1.5 unidades de CPU e 550MB
           # de memória. A distribuição feita aqui é apenas
           # um exemplo – distribua como quiser.
-          cpus: "0.13"
-          memory: "140MB"
+          cpus: '0.13'
+          memory: '140MB'
 
 # O uso do modo `bridge` deve ser adequado à carga que será usada no teste.
 # A edição anterior se beneficiou do modo host pois o volume de requisições
@@ -77,4 +81,7 @@ services:
 networks:
   default:
     driver: bridge
-    name: rinha-nginx-2024q1
+    name: rinha-2024q1
+
+volumes:
+  pgdata:

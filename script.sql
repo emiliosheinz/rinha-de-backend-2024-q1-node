@@ -1,13 +1,30 @@
--- Coloque scripts iniciais aqui
-CREATE TABLE...
+CREATE TABLE clients (
+  id SERIAL PRIMARY KEY,
+  name VARCHAR(255) NOT NULL,
+  limit INTEGER NOT NULL,
+  balance INTEGER NOT NULL DEFAULT 0
+);
+
+/* Credit and Debit */
+CREATE TYPE transaction_type AS ENUM ('c', 'd');
+
+CREATE TABLE transactions (
+  id SERIAL PRIMARY KEY,
+  type transaction_type NOT NULL,
+  client_id INTEGER NOT NULL,
+  amount INTEGER NOT NULL,
+  date TIMESTAMP NOT NULL,
+  description TEXT,
+  FOREIGN KEY (client_id) REFERENCES clients(id)
+);
 
 DO $$
 BEGIN
-  INSERT INTO clientes (nome, limite)
+  INSERT INTO clients (name, limit)
   VALUES
-    ('o barato sai caro', 1000 * 100),
-    ('zan corp ltda', 800 * 100),
-    ('les cruders', 10000 * 100),
-    ('padaria joia de cocaia', 100000 * 100),
-    ('kid mais', 5000 * 100);
+    ('Isaac Newton', 1000 * 100),
+    ('Marie Curie', 800 * 100),
+    ('Ada Lovelace', 10000 * 100),
+    ('Nikola Tesla', 100000 * 100),
+    ('Albert Einstein', 5000 * 100);
 END; $$
