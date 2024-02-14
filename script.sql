@@ -1,8 +1,8 @@
 DROP TABLE IF EXISTS transactions;
 DROP TYPE IF EXISTS transaction_type;
-DROP TABLE IF EXISTS clients;
+DROP TABLE IF EXISTS customers;
 
-CREATE TABLE clients (
+CREATE TABLE customers (
   id SERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
   credit_limit INTEGER NOT NULL,
@@ -15,16 +15,16 @@ CREATE TYPE transaction_type AS ENUM ('c', 'd');
 CREATE TABLE transactions (
   id SERIAL PRIMARY KEY,
   type transaction_type NOT NULL,
-  client_id INTEGER NOT NULL,
+  customer_id INTEGER NOT NULL,
   amount INTEGER NOT NULL,
   date TIMESTAMP NOT NULL,
   description TEXT,
-  FOREIGN KEY (client_id) REFERENCES clients(id)
+  FOREIGN KEY (customer_id) REFERENCES customers(id)
 );
 
 DO $$
 BEGIN
-  INSERT INTO clients (name, credit_limit)
+  INSERT INTO customers (name, credit_limit)
   VALUES
     ('Isaac Newton', 1000 * 100),
     ('Marie Curie', 800 * 100),
