@@ -10,7 +10,7 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter(),
   );
-  await app.listen(process.env.API_PORT, '0.0.0.0');
+  await app.listen(process.env.API_PORT, process.env.API_HOST);
   console.log('🚀 API running on port', process.env.API_PORT);
 }
 bootstrap();
