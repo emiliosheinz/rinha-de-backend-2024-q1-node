@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  HttpCode,
   HttpStatus,
   Param,
   ParseIntPipe,
@@ -14,6 +15,7 @@ export class AppController {
   constructor(private readonly appService: AppService) {}
 
   @Post('/:id/transacoes')
+  @HttpCode(200)
   createTransaction(
     @Param(
       'id',
