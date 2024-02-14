@@ -1,8 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { DATABASE_CONNECTION } from 'src/db/db.constants';
 import { Database } from 'src/db/db.types';
-import { Customer } from 'src/entities/customer.entity';
-import { TransactionType } from 'src/entities/transaction.entity';
+import { Customer } from 'src/customer/customer.entity';
+import { TransactionType } from 'src/transaction/transaction.entity';
 
 @Injectable()
 export class CustomerService {
