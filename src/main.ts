@@ -11,6 +11,6 @@ async function bootstrap() {
     new FastifyAdapter(),
   );
   await app.listen(process.env.API_PORT, process.env.API_HOST);
-  console.log('🚀 API running on port', process.env.API_PORT);
+  console.log('🚀 API running on ', `http://${process.env.API_HOST}:${process.env.API_PORT}`);
 }
 bootstrap();
