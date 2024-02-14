@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Get,
   HttpCode,
   HttpStatus,
   Param,
@@ -16,15 +17,31 @@ export class AppController {
 
   @Post('/:id/transacoes')
   @HttpCode(200)
-  createTransaction(
+  async createTransaction(
     @Param(
       'id',
       new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }),
     )
-    id: number,
+    customerId: number,
     @Body() createTransactionDto: CreateTransactionDto,
-  ): Promise<string> {
-    console.log(createTransactionDto);
-    return this.appService.createTransaction();
+  ) {
+    console.log(
+      `[API] Create transaction endpoint called for customer ID [${customerId}]`,
+    );
+    await this.appService.createTransaction(customerId, createTransactionDto);
+  }
+
+  @Get('/:id/extrato')
+  async getStatement(
+    @Param(
+      'id',
+      new ParseIntPipe({ errorHttpStatusCode: HttpStatus.NOT_ACCEPTABLE }),
+    )
+    customerId: number,
+  ) {
+    console.log(
+      `[API] Get statement endpoint called for customer ID [${customerId}]`,
+    );
+    console.log('NOT IMPLEMENTED');
   }
 }
