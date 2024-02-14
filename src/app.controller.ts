@@ -28,7 +28,11 @@ export class AppController {
     console.log(
       `[API] Create transaction endpoint called for customer ID [${customerId}]`,
     );
-    await this.appService.createTransaction(customerId, createTransactionDto);
+    const response = await this.appService.createTransaction(
+      customerId,
+      createTransactionDto,
+    );
+    return response;
   }
 
   @Get('/:id/extrato')

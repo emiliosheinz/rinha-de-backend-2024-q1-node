@@ -35,8 +35,8 @@ export class AppService {
     ]);
 
     return {
-      creditLimit: customer.credit_limit,
-      balance: newBalance,
+      limite: customer.credit_limit,
+      saldo: newBalance,
     };
   }
 
