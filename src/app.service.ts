@@ -7,7 +7,7 @@ import {
 import { DATABASE_CONNECTION } from './db/db.constants';
 import { Database } from './db/db.types';
 import { CreateTransactionDto } from './dtos/create-transaction.dto';
-import { Customer } from './entities/customer.entity';
+import { Customer } from './customer/customer.entity';
 import { CustomerService } from './customer/customer.service';
 import { TransactionService } from './transaction/transaction.service';
 
