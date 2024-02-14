@@ -9,5 +9,5 @@ export class Transaction {
   type: TransactionType;
   description: string;
   date: Date;
-  clientId: number;
+  customerId: number;
 }

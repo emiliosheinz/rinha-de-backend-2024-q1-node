@@ -1,6 +1,6 @@
-export class Client {
+export class Customer {
   id: number;
   name: string;
-  limit: number;
+  credit_limit: number;
   balance: number;
 }
