@@ -1,7 +1,11 @@
+DROP TABLE IF EXISTS transactions;
+DROP TYPE IF EXISTS transaction_type;
+DROP TABLE IF EXISTS clients;
+
 CREATE TABLE clients (
   id SERIAL PRIMARY KEY,
   name VARCHAR(255) NOT NULL,
-  limit INTEGER NOT NULL,
+  credit_limit INTEGER NOT NULL,
   balance INTEGER NOT NULL DEFAULT 0
 );
 
@@ -20,7 +24,7 @@ CREATE TABLE transactions (
 
 DO $$
 BEGIN
-  INSERT INTO clients (name, limit)
+  INSERT INTO clients (name, credit_limit)
   VALUES
     ('Isaac Newton', 1000 * 100),
     ('Marie Curie', 800 * 100),
