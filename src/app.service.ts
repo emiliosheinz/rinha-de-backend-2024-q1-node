@@ -52,7 +52,7 @@ export class AppService {
       saldo: {
         total: customer.balance,
         data_extrato: new Date(),
-        limit: customer.credit_limit,
+        limite: customer.credit_limit,
       },
       ultimas_transacoes: transactions.map((t) => ({
         valor: t.amount,
