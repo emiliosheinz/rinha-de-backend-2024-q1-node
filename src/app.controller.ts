@@ -46,6 +46,6 @@ export class AppController {
     console.log(
       `[API] Get statement endpoint called for customer ID [${customerId}]`,
     );
-    console.log('NOT IMPLEMENTED');
+    return this.appService.getStatement({ customerId });
   }
 }

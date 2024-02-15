@@ -5,7 +5,7 @@ export enum TransactionType {
 
 export class Transaction {
   id: number;
-  value: number;
+  amount: number;
   type: TransactionType;
   description: string;
   date: Date;
