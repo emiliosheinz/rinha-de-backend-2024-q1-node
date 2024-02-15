@@ -40,6 +40,29 @@ export class AppService {
     };
   }
 
+  async getStatement({ customerId }: { customerId: number }) {
+    const customer = await this.customerService.findById(customerId);
+    this.checkCustomerExists(customer);
+    const transactions = await this.transactionService.getTransactions({
+      customerId,
+      limit: 10,
+    });
+
+    return {
+      saldo: {
+        total: customer.balance,
+        data_extrato: new Date(),
+        limite: customer.credit_limit,
+      },
+      ultimas_transacoes: transactions.map((t) => ({
+        valor: t.amount,
+        tipo: t.type,
+        realizada_em: t.date,
+        descricao: t.description,
+      })),
+    };
+  }
+
   private checkCustomerExists(customer: Customer): void {
     if (!customer) {
       throw new NotFoundException('Cliente não encontrado');

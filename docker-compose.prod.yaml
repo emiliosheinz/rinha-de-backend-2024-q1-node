@@ -6,12 +6,9 @@ services:
     # publicamente acessível! Ex.: hub.docker.com
     build:
       context: .
-      target: dev
+      target: prod
       dockerfile: Dockerfile
     hostname: api01
-    volumes:
-      - ./src:/app/src
-      - ./node_modules:/app/node_modules
     # Não é necessário expor qualquer porta além da porta do load balancer,
     # mas é comum as pessoas o fazerem para testarem suas APIs e conectarem
     # ao banco de dados na fase de desenvolvimento.
@@ -56,7 +53,6 @@ services:
       - POSTGRES_DB=${DATABASE_NAME}
     volumes:
       - ./script.sql:/docker-entrypoint-initdb.d/script.sql
-      - pgdata:/var/lib/postgresql/data
     deploy:
       resources:
         limits:
@@ -77,6 +73,3 @@ networks:
   default:
     driver: bridge
     name: rinha-2024q1
-
-volumes:
-  pgdata:
