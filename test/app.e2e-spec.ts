@@ -1,50 +1,23 @@
-import { Test, TestingModule } from '@nestjs/testing';
-import { AppModule } from './../src/app.module';
-import {
-  FastifyAdapter,
-  NestFastifyApplication,
-} from '@nestjs/platform-fastify';
-import { IMemoryDb, newDb } from 'pg-mem';
-import { DATABASE_CONNECTION } from 'src/db/db.constants';
-import * as fs from 'fs';
-import * as path from 'path';
-import { ValidationPipe } from '@nestjs/common';
+import { NestFastifyApplication } from '@nestjs/platform-fastify';
+import { IBackup } from 'pg-mem';
+import { setupDatabae } from './setup-database';
+import { setupTestModule } from './setup-test-module';
 
 const isoDateRegex =
   /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/;
 
-async function runDbInitScript(db: IMemoryDb) {
-  const initScript = fs.readFileSync(
-    path.resolve(__dirname, '../script.sql'),
-    'utf8',
-  );
-  await db.public.none(initScript);
-}
-
 describe('AppController (e2e)', () => {
   let app: NestFastifyApplication;
-  let db: IMemoryDb;
+  let dbBackup: IBackup;
 
   beforeAll(async () => {
-    db = newDb();
+    const { backup, dbConnection } = setupDatabae();
+    dbBackup = backup;
+    app = await setupTestModule(new dbConnection.Pool());
+  });
 
-    const dbConnection = db.adapters.createPg();
-
-    await runDbInitScript(db);
-
-    const moduleRef: TestingModule = await Test.createTestingModule({
-      imports: [AppModule],
-    })
-      .overrideProvider(DATABASE_CONNECTION)
-      .useValue(new dbConnection.Pool())
-      .compile();
-
-    app = moduleRef.createNestApplication<NestFastifyApplication>(
-      new FastifyAdapter(),
-    );
-    app.useGlobalPipes(new ValidationPipe());
-    await app.init();
-    await app.getHttpAdapter().getInstance().ready();
+  beforeEach(async () => {
+    dbBackup.restore();
   });
 
   afterAll(async () => {
