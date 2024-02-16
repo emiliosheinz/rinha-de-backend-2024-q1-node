@@ -153,7 +153,7 @@ describe('AppController (e2e)', () => {
         });
     });
 
-    it('should return status 406 if ID in URL is not a integer', async () => {
+    it('should return status 406 if ID in URL is not an integer', async () => {
       return app
         .inject({
           method: 'POST',
@@ -216,7 +216,7 @@ describe('AppController (e2e)', () => {
         });
     });
 
-    it('should return status 422 if customer is not found', async () => {
+    it('should return status 422 if customer credit limit is exceeded', async () => {
       return app
         .inject({
           method: 'POST',
