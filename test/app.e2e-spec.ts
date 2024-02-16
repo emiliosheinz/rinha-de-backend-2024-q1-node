@@ -8,6 +8,7 @@ import { IMemoryDb, newDb } from 'pg-mem';
 import { DATABASE_CONNECTION } from 'src/db/db.constants';
 import * as fs from 'fs';
 import * as path from 'path';
+import { ValidationPipe } from '@nestjs/common';
 
 const isoDateRegex =
   /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/;
@@ -41,7 +42,7 @@ describe('AppController (e2e)', () => {
     app = moduleRef.createNestApplication<NestFastifyApplication>(
       new FastifyAdapter(),
     );
-
+    app.useGlobalPipes(new ValidationPipe());
     await app.init();
     await app.getHttpAdapter().getInstance().ready();
   });
@@ -88,7 +89,7 @@ describe('AppController (e2e)', () => {
         payload: {
           tipo: 'c',
           valor: 100,
-          descricao: 'Transaction 1',
+          descricao: 'Credit 1',
         },
       });
 
@@ -98,7 +99,7 @@ describe('AppController (e2e)', () => {
         payload: {
           tipo: 'd',
           valor: 50,
-          descricao: 'Transação 2',
+          descricao: 'Credit 2',
         },
       });
 
@@ -120,13 +121,13 @@ describe('AppController (e2e)', () => {
                 valor: 50,
                 tipo: 'd',
                 realizada_em: expect.stringMatching(isoDateRegex),
-                descricao: 'Transação 2',
+                descricao: 'Credit 2',
               },
               {
                 valor: 100,
                 tipo: 'c',
                 realizada_em: expect.stringMatching(isoDateRegex),
-                descricao: 'Transaction 1',
+                descricao: 'Credit 1',
               },
             ],
           });
@@ -141,7 +142,7 @@ describe('AppController (e2e)', () => {
           payload: {
             tipo: 'c',
             valor: 100,
-            descricao: `Transação ${i}`,
+            descricao: `Credit ${i}`,
           },
         });
       }
