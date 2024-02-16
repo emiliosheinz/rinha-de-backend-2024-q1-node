@@ -179,7 +179,7 @@ describe('AppController (e2e)', () => {
       { tipo: 'd', valor: 1, descricao: '' }, // 'descricao' min length is 1
       { tipo: 'd', valor: 1, descricao: 'I have 11 !' }, // 'descricao' max length is 10
     ])(
-      'should return status 400 if there is any invalid payload',
+      'should return status 400 if payload is invalid',
       async ({ tipo, valor, descricao }) => {
         return app
           .inject({
