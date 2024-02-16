@@ -12,7 +12,7 @@ import * as path from 'path';
 const isoDateRegex =
   /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/;
 
-async function runDbInitScrip(db: IMemoryDb) {
+async function runDbInitScript(db: IMemoryDb) {
   const initScript = fs.readFileSync(
     path.resolve(__dirname, '../script.sql'),
     'utf8',
@@ -29,7 +29,7 @@ describe('AppController (e2e)', () => {
 
     const dbConnection = db.adapters.createPg();
 
-    await runDbInitScrip(db);
+    await runDbInitScript(db);
 
     const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
