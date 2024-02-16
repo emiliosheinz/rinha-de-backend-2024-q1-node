@@ -22,13 +22,14 @@ CREATE TABLE transactions (
   FOREIGN KEY (customer_id) REFERENCES customers(id)
 );
 
-DO $$
-BEGIN
-  INSERT INTO customers (name, credit_limit)
-  VALUES
-    ('Isaac Newton', 1000 * 100),
-    ('Marie Curie', 800 * 100),
-    ('Ada Lovelace', 10000 * 100),
-    ('Nikola Tesla', 100000 * 100),
-    ('Albert Einstein', 5000 * 100);
-END; $$
+BEGIN;
+
+INSERT INTO customers (name, credit_limit)
+VALUES
+  ('Isaac Newton', 1000 * 100),
+  ('Marie Curie', 800 * 100),
+  ('Ada Lovelace', 10000 * 100),
+  ('Nikola Tesla', 100000 * 100),
+  ('Albert Einstein', 5000 * 100);
+  
+COMMIT; 
