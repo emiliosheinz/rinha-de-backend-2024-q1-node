@@ -131,4 +131,105 @@ describe('AppController (e2e)', () => {
         });
     });
   });
+
+  describe('POST clientes/1/transacoes/', () => {
+    it('should return status 200 and the customer balance and credit limit', async () => {
+      return app
+        .inject({
+          method: 'POST',
+          url: 'clientes/1/transacoes',
+          payload: {
+            tipo: 'c',
+            valor: 100,
+            descricao: 'credit',
+          },
+        })
+        .then((result) => {
+          expect(result.statusCode).toBe(200);
+          expect(result.json()).toEqual({
+            limite: 100000,
+            saldo: 100,
+          });
+        });
+    });
+
+    it.each([{ id: 1.1 }, { id: 'um' }])(
+      'should return status 406 if ID in URL is not an integer',
+      async ({ id }) => {
+        return app
+          .inject({
+            method: 'POST',
+            url: `clientes/${id}/transacoes`,
+            payload: {
+              tipo: 'c',
+              valor: 100,
+              descricao: 'credit',
+            },
+          })
+          .then((result) => {
+            expect(result.statusCode).toBe(406);
+          });
+      },
+    );
+
+    it.each([
+      { tipo: 'c', descricao: 'credit' }, // 'valor' is required
+      { valor: 1, descricao: 'credit' }, // 'tipo' is required
+      { tipo: 'c', valor: 1.5 }, // 'descricao' is required
+      { tipo: 'c', valor: 1.5, descricao: 'credit' }, // 'valor' not integer
+      { tipo: 'c', valor: -1, descricao: 'credit' }, // negative 'valor'
+      { tipo: 'e', valor: 1, descricao: 'credit' }, // invalid 'tipo'
+      { tipo: 'd', valor: 1, descricao: '' }, // 'descricao' min length is 1
+      { tipo: 'd', valor: 1, descricao: 'I have 11 !' }, // 'descricao' max length is 10
+    ])(
+      'should return status 400 if payload is invalid',
+      async ({ tipo, valor, descricao }) => {
+        return app
+          .inject({
+            method: 'POST',
+            url: 'clientes/1/transacoes',
+            payload: {
+              tipo: tipo,
+              valor: valor,
+              descricao: descricao,
+            },
+          })
+          .then((result) => {
+            expect(result.statusCode).toBe(400);
+          });
+      },
+    );
+
+    it('should return status 404 if customer is not found', async () => {
+      return app
+        .inject({
+          method: 'POST',
+          url: 'clientes/6/transacoes',
+          payload: {
+            tipo: 'c',
+            valor: 100,
+            descricao: 'credit',
+          },
+        })
+        .then((result) => {
+          expect(result.statusCode).toBe(404);
+        });
+    });
+
+    it('should return status 422 if customer credit limit is exceeded', async () => {
+      return app
+        .inject({
+          method: 'POST',
+          url: 'clientes/1/transacoes',
+          payload: {
+            tipo: 'd',
+            valor: 100001,
+            descricao: 'debit',
+          },
+        })
+        .then((result) => {
+          expect(result.statusCode).toBe(422);
+        });
+    });
+  });
 });
