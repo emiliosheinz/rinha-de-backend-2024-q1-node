@@ -4,7 +4,7 @@ import {
   FastifyAdapter,
   NestFastifyApplication,
 } from '@nestjs/platform-fastify';
-import { newDb } from 'pg-mem';
+import { IMemoryDb, newDb } from 'pg-mem';
 import { DATABASE_CONNECTION } from 'src/db/db.constants';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -12,18 +12,24 @@ import * as path from 'path';
 const isoDateRegex =
   /\d{4}-[01]\d-[0-3]\dT[0-2]\d:[0-5]\d:[0-5]\d\.\d+([+-][0-2]\d:[0-5]\d|Z)/;
 
+async function runDbInitScrip(db: IMemoryDb) {
+  const initScript = fs.readFileSync(
+    path.resolve(__dirname, '../script.sql'),
+    'utf8',
+  );
+  await db.public.none(initScript);
+}
+
 describe('AppController (e2e)', () => {
   let app: NestFastifyApplication;
+  let db: IMemoryDb;
 
-  beforeEach(async () => {
-    const db = newDb();
+  beforeAll(async () => {
+    db = newDb();
 
-    const initScript = fs.readFileSync(
-      path.resolve(__dirname, '../script.sql'),
-      'utf8',
-    );
-    db.public.none(initScript);
     const dbConnection = db.adapters.createPg();
+
+    await runDbInitScrip(db);
 
     const moduleRef: TestingModule = await Test.createTestingModule({
       imports: [AppModule],
@@ -38,6 +44,10 @@ describe('AppController (e2e)', () => {
 
     await app.init();
     await app.getHttpAdapter().getInstance().ready();
+  });
+
+  afterAll(async () => {
+    await app.close();
   });
 
   describe('GET clientes/:id/extrato/', () => {
@@ -78,6 +88,7 @@ describe('AppController (e2e)', () => {
         payload: {
           tipo: 'c',
           valor: 100,
+          descricao: 'Transaction 1',
         },
       });
 
@@ -87,6 +98,7 @@ describe('AppController (e2e)', () => {
         payload: {
           tipo: 'd',
           valor: 50,
+          descricao: 'Transação 2',
         },
       });
 
@@ -108,13 +120,13 @@ describe('AppController (e2e)', () => {
                 valor: 50,
                 tipo: 'd',
                 realizada_em: expect.stringMatching(isoDateRegex),
-                descricao: null,
+                descricao: 'Transação 2',
               },
               {
                 valor: 100,
                 tipo: 'c',
                 realizada_em: expect.stringMatching(isoDateRegex),
-                descricao: null,
+                descricao: 'Transaction 1',
               },
             ],
           });
@@ -129,6 +141,7 @@ describe('AppController (e2e)', () => {
           payload: {
             tipo: 'c',
             valor: 100,
+            descricao: `Transação ${i}`,
           },
         });
       }
