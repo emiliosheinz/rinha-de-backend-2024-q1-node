@@ -153,21 +153,24 @@ describe('AppController (e2e)', () => {
         });
     });
 
-    it('should return status 406 if ID in URL is not an integer', async () => {
-      return app
-        .inject({
-          method: 'POST',
-          url: 'clientes/UM/transacoes',
-          payload: {
-            tipo: 'c',
-            valor: 100,
-            descricao: 'credit',
-          },
-        })
-        .then((result) => {
-          expect(result.statusCode).toBe(406);
-        });
-    });
+    it.each([{ id: 1.1 }, { id: 'um' }])(
+      'should return status 406 if ID in URL is not an integer',
+      async ({ id }) => {
+        return app
+          .inject({
+            method: 'POST',
+            url: `clientes/${id}/transacoes`,
+            payload: {
+              tipo: 'c',
+              valor: 100,
+              descricao: 'credit',
+            },
+          })
+          .then((result) => {
+            expect(result.statusCode).toBe(406);
+          });
+      },
+    );
 
     it.each([
       { tipo: 'c', descricao: 'credit' }, // 'valor' is required
