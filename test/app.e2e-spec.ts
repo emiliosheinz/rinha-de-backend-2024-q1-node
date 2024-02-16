@@ -192,9 +192,6 @@ describe('AppController (e2e)', () => {
             },
           })
           .then((result) => {
-            if (result.statusCode !== 400) {
-              console.log(tipo, valor, descricao);
-            }
             expect(result.statusCode).toBe(400);
           });
       },
