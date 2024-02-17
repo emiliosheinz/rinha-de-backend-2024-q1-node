@@ -9,6 +9,8 @@ CREATE TABLE customers (
   balance INTEGER NOT NULL DEFAULT 0
 );
 
+CREATE INDEX customers_id_idx ON customers (id);
+
 /* Credit and Debit */
 CREATE TYPE transaction_type AS ENUM ('c', 'd');
 
@@ -21,6 +23,9 @@ CREATE TABLE transactions (
   description TEXT,
   FOREIGN KEY (customer_id) REFERENCES customers(id)
 );
+
+CREATE INDEX transactions_customer_id_idx ON transactions (customer_id);
+CREATE INDEX transactions_date_idx ON transactions (date);
 
 BEGIN;
 
