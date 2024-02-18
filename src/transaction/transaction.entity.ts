@@ -5,9 +5,9 @@ export enum TransactionType {
 
 export class Transaction {
   id: number;
-  amount: number;
-  type: TransactionType;
-  description: string;
-  date: Date;
+  valor: number;
+  tipo: TransactionType;
+  descricao: string;
+  realizada_em: Date;
   customerId: number;
 }

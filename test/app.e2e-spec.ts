@@ -1,6 +1,6 @@
 import { NestFastifyApplication } from '@nestjs/platform-fastify';
 import { IBackup } from 'pg-mem';
-import { setupDatabae } from './setup-database';
+import { setupDatabase } from './setup-database';
 import { setupTestModule } from './setup-test-module';
 
 const isoDateRegex =
@@ -11,7 +11,7 @@ describe('AppController (e2e)', () => {
   let dbBackup: IBackup;
 
   beforeAll(async () => {
-    const { backup, dbConnection } = setupDatabae();
+    const { backup, dbConnection } = setupDatabase();
     dbBackup = backup;
     app = await setupTestModule(new dbConnection.Pool());
   });

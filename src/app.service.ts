@@ -6,7 +6,7 @@ import {
 } from '@nestjs/common';
 import { DATABASE_CONNECTION } from './db/db.constants';
 import { Database } from './db/db.types';
-import { CreateTransactionDto } from './dtos/create-transaction.dto';
+import { CreateTransactionDto } from './transaction/create-transaction.dto';
 import { Customer } from './customer/customer.entity';
 import { CustomerService } from './customer/customer.service';
 import { TransactionService } from './transaction/transaction.service';
@@ -23,11 +23,11 @@ export class AppService {
     const customer = await this.customerService.findById(customerId);
     this.checkCustomerExists(customer);
     const newBalance = this.customerService.calculateNewBalance(
-      customer.balance,
+      customer.saldo,
       dto.tipo,
       dto.valor,
     );
-    this.checkCreditLimitExceeded(customer.credit_limit, newBalance);
+    this.checkCreditLimitExceeded(customer.limite, newBalance);
 
     await Promise.all([
       this.customerService.updateBalance(customerId, newBalance),
@@ -35,7 +35,7 @@ export class AppService {
     ]);
 
     return {
-      limite: customer.credit_limit,
+      limite: customer.limite,
       saldo: newBalance,
     };
   }
@@ -50,16 +50,11 @@ export class AppService {
 
     return {
       saldo: {
-        total: customer.balance,
+        total: customer.saldo,
         data_extrato: new Date(),
-        limite: customer.credit_limit,
+        limite: customer.limite,
       },
-      ultimas_transacoes: transactions.map((t) => ({
-        valor: t.amount,
-        tipo: t.type,
-        realizada_em: t.date,
-        descricao: t.description,
-      })),
+      ultimas_transacoes: transactions,
     };
   }
 
