@@ -20,7 +20,7 @@ services:
       resources:
         limits:
           cpus: '0.6'
-          memory: '200MB'
+          memory: '155MB'
 
   api02:
     # Essa sintaxe reusa o que foi declarado em 'api01'.
@@ -41,7 +41,7 @@ services:
       resources:
         limits:
           cpus: '0.17'
-          memory: '10MB'
+          memory: '100MB'
 
   db:
     image: postgres:16-alpine
