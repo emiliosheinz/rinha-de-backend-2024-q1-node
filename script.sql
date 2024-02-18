@@ -9,7 +9,7 @@ CREATE TABLE customers (
   saldo INTEGER NOT NULL DEFAULT 0
 );
 
-CREATE INDEX customers_id_idx ON customers (id);
+CREATE UNIQUE INDEX customers_id_idx ON customers (id);
 
 /* Credit and Debit */
 CREATE TYPE transaction_type AS ENUM ('c', 'd');
@@ -24,8 +24,7 @@ CREATE TABLE transactions (
   FOREIGN KEY (customer_id) REFERENCES customers(id)
 );
 
-CREATE INDEX transactions_customer_id_idx ON transactions (customer_id);
-CREATE INDEX transactions_realizada_em_idx ON transactions (realizada_em);
+CREATE INDEX idx_transactions_customer_id_realizada_em ON transactions (customer_id, realizada_em DESC);
 
 BEGIN;
 
