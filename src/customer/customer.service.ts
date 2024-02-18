@@ -28,7 +28,7 @@ export class CustomerService {
   }
 
   async updateBalance(id: number, newBalance: number): Promise<void> {
-    await this.db.query('UPDATE customers SET balance = $1 WHERE id = $2', [
+    await this.db.query('UPDATE customers SET saldo = $1 WHERE id = $2', [
       newBalance,
       id,
     ]);

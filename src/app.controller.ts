@@ -9,7 +9,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { AppService } from './app.service';
-import { CreateTransactionDto } from './dtos/create-transaction.dto';
+import { CreateTransactionDto } from './transaction/create-transaction.dto';
 
 @Controller('/clientes')
 export class AppController {

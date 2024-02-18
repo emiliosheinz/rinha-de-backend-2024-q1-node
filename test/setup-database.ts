@@ -10,7 +10,7 @@ function runDbInitScript(db: IMemoryDb) {
   db.public.none(initScript);
 }
 
-export function setupDatabae() {
+export function setupDatabase() {
   const db = newDb();
   const dbConnection = db.adapters.createPg();
 

@@ -4,9 +4,9 @@ DROP TABLE IF EXISTS customers;
 
 CREATE TABLE customers (
   id SERIAL PRIMARY KEY,
-  name VARCHAR(255) NOT NULL,
-  credit_limit INTEGER NOT NULL,
-  balance INTEGER NOT NULL DEFAULT 0
+  nome VARCHAR(255) NOT NULL,
+  limite INTEGER NOT NULL,
+  saldo INTEGER NOT NULL DEFAULT 0
 );
 
 CREATE INDEX customers_id_idx ON customers (id);
@@ -16,20 +16,20 @@ CREATE TYPE transaction_type AS ENUM ('c', 'd');
 
 CREATE TABLE transactions (
   id SERIAL PRIMARY KEY,
-  type transaction_type NOT NULL,
+  tipo transaction_type NOT NULL,
   customer_id INTEGER NOT NULL,
-  amount INTEGER NOT NULL,
-  date TIMESTAMP NOT NULL,
-  description TEXT,
+  valor INTEGER NOT NULL,
+  realizada_em TIMESTAMP NOT NULL,
+  descricao TEXT,
   FOREIGN KEY (customer_id) REFERENCES customers(id)
 );
 
 CREATE INDEX transactions_customer_id_idx ON transactions (customer_id);
-CREATE INDEX transactions_date_idx ON transactions (date);
+CREATE INDEX transactions_realizada_em_idx ON transactions (realizada_em);
 
 BEGIN;
 
-INSERT INTO customers (name, credit_limit)
+INSERT INTO customers (nome, limite)
 VALUES
   ('Isaac Newton', 1000 * 100),
   ('Marie Curie', 800 * 100),
