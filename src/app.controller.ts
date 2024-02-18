@@ -25,9 +25,6 @@ export class AppController {
     customerId: number,
     @Body() createTransactionDto: CreateTransactionDto,
   ) {
-    console.log(
-      `[API] Create transaction endpoint called for customer ID [${customerId}]`,
-    );
     const response = await this.appService.createTransaction(
       customerId,
       createTransactionDto,
@@ -43,9 +40,6 @@ export class AppController {
     )
     customerId: number,
   ) {
-    console.log(
-      `[API] Get statement endpoint called for customer ID [${customerId}]`,
-    );
     return this.appService.getStatement({ customerId });
   }
 }

@@ -11,7 +11,7 @@ async function bootstrap() {
     AppModule,
     new FastifyAdapter(),
   );
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({ errorHttpStatusCode: 422 }));
   await app.listen(process.env.API_PORT, process.env.API_HOST);
   console.log(
     '🚀 API running on ',
