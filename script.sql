@@ -24,7 +24,7 @@ CREATE TABLE transactions (
   FOREIGN KEY (customer_id) REFERENCES customers(id)
 );
 
-CREATE INDEX idx_transactions_customer_id_realizada_em ON transactions (customer_id, realizada_em DESC);
+CREATE INDEX transactions_customer_id_realizada_em_idx ON transactions (customer_id, realizada_em DESC);
 
 BEGIN;
 
