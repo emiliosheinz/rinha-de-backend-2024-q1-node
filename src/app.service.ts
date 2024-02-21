@@ -22,6 +22,7 @@ export class AppService {
   async createTransaction(customerId: number, dto: CreateTransactionDto) {
     const customer = await this.customerService.findById(customerId);
     this.checkCustomerExists(customer);
+
     const newBalance = this.customerService.calculateNewBalance(
       customer.saldo,
       dto.tipo,
@@ -43,6 +44,7 @@ export class AppService {
   async getStatement({ customerId }: { customerId: number }) {
     const customer = await this.customerService.findById(customerId);
     this.checkCustomerExists(customer);
+
     const transactions = await this.transactionService.getTransactions({
       customerId,
       limit: 10,
