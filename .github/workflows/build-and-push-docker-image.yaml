@@ -36,4 +36,4 @@ jobs:
           push: true
           file: ./Dockerfile
           platforms: linux/amd64
-          tags: emiliosheinz/rinha-de-backend-2024-q1:latest
+          tags: ghcr.io/emiliosheinz/rinha-de-backend-2024-q1:latest
