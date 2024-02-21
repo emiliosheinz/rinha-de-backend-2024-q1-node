@@ -1,65 +1,66 @@
-<p align="center">
-  <a href="http://nestjs.com/" target="blank"><img src="https://nestjs.com/img/logo-small.svg" width="200" alt="Nest Logo" /></a>
-</p>
+# 🐔 Rinha de Backend - 2024/Q1
 
-[circleci-image]: https://img.shields.io/circleci/build/github/nestjs/nest/master?token=abc123def456
-[circleci-url]: https://circleci.com/gh/nestjs/nest
+A Rinha de Backend é um desafio que tem como principal objetivo compartilhar conhecimento em formato de desafio. Neste repositório você encontrará a solução desenvolvida por [@emiliosheinz](https://github.com/emiliosheinz) e [@fumegalli](https://github.com/fumegalli) utilizando Node.js juntamente com o framework Nest.js e o banco de dados PostgreSQL. Para maiores detalhes sobre o desafio, acesse o [repositório oficial da Rinha de Backend](https://github.com/zanfranceschi/rinha-de-backend-2024-q1).
 
-  <p align="center">A progressive <a href="http://nodejs.org" target="_blank">Node.js</a> framework for building efficient and scalable server-side applications.</p>
-    <p align="center">
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/v/@nestjs/core.svg" alt="NPM Version" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/l/@nestjs/core.svg" alt="Package License" /></a>
-<a href="https://www.npmjs.com/~nestjscore" target="_blank"><img src="https://img.shields.io/npm/dm/@nestjs/common.svg" alt="NPM Downloads" /></a>
-<a href="https://circleci.com/gh/nestjs/nest" target="_blank"><img src="https://img.shields.io/circleci/build/github/nestjs/nest/master" alt="CircleCI" /></a>
-<a href="https://coveralls.io/github/nestjs/nest?branch=master" target="_blank"><img src="https://coveralls.io/repos/github/nestjs/nest/badge.svg?branch=master#9" alt="Coverage" /></a>
-<a href="https://discord.gg/G7Qnnhy" target="_blank"><img src="https://img.shields.io/badge/discord-online-brightgreen.svg" alt="Discord"/></a>
-<a href="https://opencollective.com/nest#backer" target="_blank"><img src="https://opencollective.com/nest/backers/badge.svg" alt="Backers on Open Collective" /></a>
-<a href="https://opencollective.com/nest#sponsor" target="_blank"><img src="https://opencollective.com/nest/sponsors/badge.svg" alt="Sponsors on Open Collective" /></a>
-  <a href="https://paypal.me/kamilmysliwiec" target="_blank"><img src="https://img.shields.io/badge/Donate-PayPal-ff3f59.svg"/></a>
-    <a href="https://opencollective.com/nest#sponsor"  target="_blank"><img src="https://img.shields.io/badge/Support%20us-Open%20Collective-41B883.svg" alt="Support us"></a>
-  <a href="https://twitter.com/nestframework" target="_blank"><img src="https://img.shields.io/twitter/follow/nestframework.svg?style=social&label=Follow"></a>
-</p>
-  <!--[![Backers on Open Collective](https://opencollective.com/nest/backers/badge.svg)](https://opencollective.com/nest#backer)
-  [![Sponsors on Open Collective](https://opencollective.com/nest/sponsors/badge.svg)](https://opencollective.com/nest#sponsor)-->
+![Banner da Rinha de Backend](./docs/banner.png)
 
-## Description
+## Rodando a aplicação localmente
 
-[Nest](https://github.com/nestjs/nest) framework TypeScript starter repository.
+Para rodar o projeto localmente, seguir um dos passo a passos abaixo:
 
-## Installation
+### 1. Utilizando a imagem disponível no ghcr.io
+
+Neste modo o Docker utilizará a ultima imagem da aplicação disponível no repositório do [ghcr.io](https://github.com/emiliosheinz/rinha-de-backend-2024-q1/pkgs/container/rinha-de-backend-2024-q1). Portanto, nenhuma modificação de código feita localmente será aplicada.
 
 ```bash
-$ yarn install
+docker-compose up -d
 ```
 
-## Running the app
+### 2. Utilizando o código fonte local
+
+O comando abaixo irá criar um arquivo `docker-compose.override.yml` que garantirá que o Docker utilize o código fonte local ao invés da imagem disponível no `ghcr.io`. Após isso, o comando `docker-compose up -d` irá subir a aplicação. Esse é o método recomendado caso você tenha realizado alguma modificação no código fonte e queira rodar o teste de carga localmente.
 
 ```bash
-# development
-$ yarn run start
-
-# watch mode
-$ yarn run start:dev
-
-# production mode
-$ yarn run start:prod
+cat docker-compose.override.example.yml > docker-compose.override.yml && docker-compose up -d
 ```
 
-## Test
+### 3. Modo de desenvolvimento (com hot-reload)
+
+Para rodar a aplicação em modo de desenvolvimento, é necessário seguir os passos abaixo:
+
+1. Rode o comando para gerar o arquivo de override:
+
+   ```bash
+   cat docker-compose.override.example.yml > docker-compose.override.yml
+   ```
+
+2. Descomente as linhas abaixo no arquivo `docker-compose.override.yml` gerado no passo anterior:
+
+   ```yaml
+   command: 'npm run start:dev'
+   volumes:
+     - ./src:/app/src
+     - ./node_modules:/app/node_modules
+   ```
+
+3. Rode o comando abaixo para subir a aplicação:
+
+   ```bash
+   docker-compose up -d
+   ```
+
+## Rodando os testes E2E
+
+Para garantir que qualquer modificação feita na base de código não quebrou nenhuma funcionalidade, você pode rodar os testes E2E com o comando abaixo:
 
 ```bash
-# unit tests
-$ yarn run test
-
-# e2e tests
-$ yarn run test:e2e
-
-# test coverage
-$ yarn run test:cov
+npm run test:e2e
 ```
 
-### [Repositório da Rinha de Backend](https://github.com/zanfranceschi/rinha-de-backend-2024-q1)
+## Rodando os testes de carga
 
-## License
+Para rodar os testes de carga, é necessário que você tenha a ferramenta [Gatling](https://gatling.io/) instalada em sua máquina. Após isso, basta rodar o comando abaixo:
 
-Nest is [MIT licensed](LICENSE).
+```bash
+./executar-teste-local.sh
+```
