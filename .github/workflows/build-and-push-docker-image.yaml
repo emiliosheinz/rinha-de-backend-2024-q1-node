@@ -1,9 +1,6 @@
 name: 🐳 Build and push Docker image
 
 on:
-  pull_request:
-    branches:
-      - main
   push:
     branches:
       - main
