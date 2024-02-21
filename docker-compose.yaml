@@ -4,10 +4,7 @@ services:
   api01: &api
     # Lembre-se de que seu serviço HTTP deve estar hospedado num repositório
     # publicamente acessível! Ex.: hub.docker.com
-    build:
-      context: .
-      target: prod
-      dockerfile: Dockerfile
+    image: ghcr.io/emiliosheinz/rinha-de-backend-2024-q1:latest
     hostname: api01
     # Não é necessário expor qualquer porta além da porta do load balancer,
     # mas é comum as pessoas o fazerem para testarem suas APIs e conectarem
