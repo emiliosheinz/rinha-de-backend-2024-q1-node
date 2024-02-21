@@ -17,6 +17,13 @@ export class CustomerService {
     return rows[0];
   }
 
+  async updateBalance(id: number, newBalance: number): Promise<void> {
+    await this.db.query('UPDATE customers SET saldo = $1 WHERE id = $2', [
+      newBalance,
+      id,
+    ]);
+  }
+
   calculateNewBalance(
     currentBalance: number,
     transactionType: TransactionType,
@@ -25,12 +32,5 @@ export class CustomerService {
     return transactionType === TransactionType.Debit
       ? currentBalance - amount
       : currentBalance + amount;
-  }
-
-  async updateBalance(id: number, newBalance: number): Promise<void> {
-    await this.db.query('UPDATE customers SET saldo = $1 WHERE id = $2', [
-      newBalance,
-      id,
-    ]);
   }
 }
