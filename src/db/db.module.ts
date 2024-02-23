@@ -10,6 +10,7 @@ const dbProvider: Provider = {
     database: process.env.DATABASE_NAME,
     host: process.env.DATABASE_HOSTNAME,
     port: parseInt(process.env.DATABASE_PORT, 10),
+    max: 12,
   }),
 };
 
