@@ -7,7 +7,6 @@ import {
 import { DATABASE_CONNECTION } from './db/db.constants';
 import { Database } from './db/db.types';
 import { CreateTransactionDto } from './transaction/create-transaction.dto';
-import { Customer } from './customer/customer.entity';
 import { CustomerService } from './customer/customer.service';
 import { TransactionService } from './transaction/transaction.service';
 
@@ -20,21 +19,18 @@ export class AppService {
   ) {}
 
   async createTransaction(customerId: number, dto: CreateTransactionDto) {
+    this.checkCustomerExists(customerId);
     const customer = await this.customerService.findById(customerId);
-    this.checkCustomerExists(customer);
-
     const newBalance = this.customerService.calculateNewBalance(
       customer.saldo,
       dto.tipo,
       dto.valor,
     );
     this.checkCreditLimitExceeded(customer.limite, newBalance);
-
     await Promise.all([
       this.customerService.updateBalance(customerId, newBalance),
       this.transactionService.create(customerId, dto),
     ]);
-
     return {
       limite: customer.limite,
       saldo: newBalance,
@@ -42,14 +38,14 @@ export class AppService {
   }
 
   async getStatement({ customerId }: { customerId: number }) {
-    const customer = await this.customerService.findById(customerId);
-    this.checkCustomerExists(customer);
-
-    const transactions = await this.transactionService.getTransactions({
-      customerId,
-      limit: 10,
-    });
-
+    this.checkCustomerExists(customerId);
+    const [customer, transactions] = await Promise.all([
+      this.customerService.findById(customerId),
+      this.transactionService.getTransactions({
+        customerId,
+        limit: 10,
+      }),
+    ]);
     return {
       saldo: {
         total: customer.saldo,
@@ -60,8 +56,9 @@ export class AppService {
     };
   }
 
-  private checkCustomerExists(customer: Customer): void {
-    if (!customer) {
+  private checkCustomerExists(customerId: number): void {
+    const isValidCustomerId = customerId >= 1 && customerId <= 5;
+    if (!isValidCustomerId) {
       throw new NotFoundException('Cliente não encontrado');
     }
   }

@@ -8,10 +8,10 @@ import { TransactionModule } from './transaction/transaction.module';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
     DbModule,
     CustomerModule,
     TransactionModule,
+    ConfigModule.forRoot({ isGlobal: true }),
   ],
   controllers: [AppController],
   providers: [AppService],
