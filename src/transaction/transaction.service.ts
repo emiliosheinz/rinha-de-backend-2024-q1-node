@@ -3,13 +3,18 @@ import { DATABASE_CONNECTION } from 'src/db/db.constants';
 import { Database } from 'src/db/db.types';
 import { CreateTransactionDto } from './create-transaction.dto';
 import { Transaction } from './transaction.entity';
+import { PoolClient } from 'pg';
 
 @Injectable()
 export class TransactionService {
   constructor(@Inject(DATABASE_CONNECTION) private db: Database) {}
 
-  async create(customerId: number, dto: CreateTransactionDto): Promise<void> {
-    await this.db.query(
+  async create(
+    customerId: number,
+    dto: CreateTransactionDto,
+    client?: PoolClient,
+  ): Promise<void> {
+    await (client || this.db).query(
       'INSERT INTO transactions(tipo, customer_id, valor, realizada_em, descricao) VALUES($1, $2, $3, $4, $5)',
       [dto.tipo, customerId, dto.valor, new Date(), dto.descricao],
     );
