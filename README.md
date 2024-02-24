@@ -18,10 +18,10 @@ docker-compose up -d
 
 ### 2. Utilizando o código fonte local
 
-O comando abaixo irá criar um arquivo `docker-compose.override.yml` que garantirá que o Docker utilize o código fonte local ao invés da imagem disponível no `ghcr.io`. Após isso, o comando `docker-compose up -d` irá subir a aplicação. Esse é o método recomendado caso você tenha realizado alguma modificação no código fonte e queira rodar o teste de carga localmente.
+O comando abaixo irá criar um arquivo `docker-compose.override.yaml` que garantirá que o Docker utilize o código fonte local ao invés da imagem disponível no `ghcr.io`. Após isso, o comando `docker-compose up -d` irá subir a aplicação. Esse é o método recomendado caso você tenha realizado alguma modificação no código fonte e queira rodar o teste de carga localmente.
 
 ```bash
-cat docker-compose.override.example.yml > docker-compose.override.yml && docker-compose up -d
+cat docker-compose.override.example.yaml > docker-compose.override.yaml && docker-compose up -d
 ```
 
 ### 3. Modo de desenvolvimento (com hot-reload)

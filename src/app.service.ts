@@ -1,40 +1,53 @@
 import {
-  Inject,
   Injectable,
   NotFoundException,
   UnprocessableEntityException,
 } from '@nestjs/common';
-import { DATABASE_CONNECTION } from './db/db.constants';
-import { Database } from './db/db.types';
 import { CreateTransactionDto } from './transaction/create-transaction.dto';
 import { CustomerService } from './customer/customer.service';
 import { TransactionService } from './transaction/transaction.service';
+import { DbService } from './db/db.service';
 
 @Injectable()
 export class AppService {
   constructor(
-    @Inject(DATABASE_CONNECTION) private db: Database,
     private customerService: CustomerService,
     private transactionService: TransactionService,
+    private dbService: DbService,
   ) {}
 
   async createTransaction(customerId: number, dto: CreateTransactionDto) {
     this.checkCustomerExists(customerId);
-    const customer = await this.customerService.findById(customerId);
-    const newBalance = this.customerService.calculateNewBalance(
-      customer.saldo,
-      dto.tipo,
-      dto.valor,
-    );
-    this.checkCreditLimitExceeded(customer.limite, newBalance);
-    await Promise.all([
-      this.customerService.updateBalance(customerId, newBalance),
-      this.transactionService.create(customerId, dto),
-    ]);
-    return {
-      limite: customer.limite,
-      saldo: newBalance,
-    };
+
+    const transaction = await this.dbService.startTransaction();
+
+    try {
+      const customer = await this.customerService.findByIdForUpdate(
+        customerId,
+        transaction,
+      );
+      const newBalance = this.customerService.calculateNewBalance(
+        customer.saldo,
+        dto.tipo,
+        dto.valor,
+      );
+      this.checkCreditLimitExceeded(customer.limite, newBalance);
+
+      await Promise.all([
+        this.customerService.updateBalance(customerId, newBalance, transaction),
+        this.transactionService.create(customerId, dto, transaction),
+      ]);
+
+      await this.dbService.commit(transaction);
+
+      return {
+        limite: customer.limite,
+        saldo: newBalance,
+      };
+    } catch (error) {
+      await this.dbService.rollback(transaction);
+      throw error;
+    }
   }
 
   async getStatement({ customerId }: { customerId: number }) {
