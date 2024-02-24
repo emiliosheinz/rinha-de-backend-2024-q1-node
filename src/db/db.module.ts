@@ -1,6 +1,7 @@
 import { Module, Provider } from '@nestjs/common';
 import { Pool } from 'pg';
 import { DATABASE_CONNECTION } from './db.constants';
+import { DbService } from './db.service';
 
 const dbProvider: Provider = {
   provide: DATABASE_CONNECTION,
@@ -15,7 +16,7 @@ const dbProvider: Provider = {
 };
 
 @Module({
-  exports: [dbProvider],
-  providers: [dbProvider],
+  exports: [dbProvider, DbService],
+  providers: [dbProvider, DbService],
 })
 export class DbModule {}
