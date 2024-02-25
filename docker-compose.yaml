@@ -9,8 +9,6 @@ services:
     # Não é necessário expor qualquer porta além da porta do load balancer,
     # mas é comum as pessoas o fazerem para testarem suas APIs e conectarem
     # ao banco de dados na fase de desenvolvimento.
-    env_file:
-      - .env
     depends_on:
       - db
     deploy:

@@ -2,6 +2,8 @@ services:
   api01: &api
     image: 'rinha-de-backend-2024-q1'
     build: .
+    env_file:
+      - .env
     # Uncomment the next lines if you want to have the app running in development mode with hot-reload
     # command: 'npm run start:dev'
     # volumes:
