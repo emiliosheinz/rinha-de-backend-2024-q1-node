@@ -6,7 +6,7 @@ A Rinha de Backend é um desafio que tem como principal objetivo compartilhar co
 
 ## Resultados
 
-Abaixo você encontra os resultados dos testes de carga realizados localmente na aplicação. Foi possível fazer com que todas as requisições fossem respondidas corretamente em menos de 500ms. Fazer o Lock apropriados das linhas do banco de dados foi essencial para garantir a integridade dos dados em cenários de alta concorrência.
+Abaixo você encontra os resultados dos testes de carga realizados localmente na aplicação. Foi possível fazer com que todas as requisições fossem respondidas corretamente em menos de ~ 200ms. Fazer o Lock apropriados das linhas do banco de dados foi essencial para garantir a integridade dos dados em cenários de alta concorrência.
 
 ![Resultado dos testes de carga](./docs/result.png)
 
