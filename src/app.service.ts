@@ -36,10 +36,7 @@ export class AppService {
   }
 
   async createTransaction(customerId: number, dto: CreateTransactionDto) {
-    if (!this.isInitialized) {
-      throw new ServiceUnavailableException();
-    }
-
+    this.checkIsInitialized();
     this.checkCustomerExists(customerId);
 
     const transaction = await this.dbService.startTransaction();
@@ -74,10 +71,7 @@ export class AppService {
   }
 
   async getStatement({ customerId }: { customerId: number }) {
-    if (!this.isInitialized) {
-      throw new ServiceUnavailableException();
-    }
-
+    this.checkIsInitialized();
     this.checkCustomerExists(customerId);
     const [customer, transactions] = await Promise.all([
       this.customerService.findById(customerId),
@@ -106,6 +100,12 @@ export class AppService {
   private checkCreditLimitExceeded(limit: number, newBalance: number): void {
     if (newBalance < -limit) {
       throw new UnprocessableEntityException();
+    }
+  }
+
+  private checkIsInitialized(): void {
+    if (!this.isInitialized) {
+      throw new ServiceUnavailableException();
     }
   }
 }
