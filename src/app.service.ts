@@ -2,6 +2,7 @@ import {
   Inject,
   Injectable,
   NotFoundException,
+  ServiceUnavailableException,
   UnprocessableEntityException,
 } from '@nestjs/common';
 import { CreateTransactionDto } from './transaction/create-transaction.dto';
@@ -13,6 +14,8 @@ import { Database } from './db/db.types';
 
 @Injectable()
 export class AppService {
+  private isInitialized = false;
+
   constructor(
     @Inject(DATABASE_CONNECTION) private db: Database,
     private customerService: CustomerService,
@@ -29,9 +32,14 @@ export class AppService {
     );
     const connections = await Promise.all(promisedConnections);
     connections.forEach((connection) => connection.release());
+    this.isInitialized = true;
   }
 
   async createTransaction(customerId: number, dto: CreateTransactionDto) {
+    if (!this.isInitialized) {
+      throw new ServiceUnavailableException();
+    }
+
     this.checkCustomerExists(customerId);
 
     const transaction = await this.dbService.startTransaction();
@@ -66,6 +74,10 @@ export class AppService {
   }
 
   async getStatement({ customerId }: { customerId: number }) {
+    if (!this.isInitialized) {
+      throw new ServiceUnavailableException();
+    }
+
     this.checkCustomerExists(customerId);
     const [customer, transactions] = await Promise.all([
       this.customerService.findById(customerId),
@@ -87,13 +99,13 @@ export class AppService {
   private checkCustomerExists(customerId: number): void {
     const isValidCustomerId = customerId >= 1 && customerId <= 5;
     if (!isValidCustomerId) {
-      throw new NotFoundException('Cliente não encontrado');
+      throw new NotFoundException();
     }
   }
 
   private checkCreditLimitExceeded(limit: number, newBalance: number): void {
     if (newBalance < -limit) {
-      throw new UnprocessableEntityException('Limite excedido');
+      throw new UnprocessableEntityException();
     }
   }
 }
