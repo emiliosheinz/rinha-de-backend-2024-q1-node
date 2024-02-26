@@ -25,6 +25,7 @@ jobs:
           echo "DATABASE_PASSWORD=${{ secrets.DATABASE_PASSWORD }}" >> .env
           echo "DATABASE_HOSTNAME=${{ vars.DATABASE_HOSTNAME }}" >> .env
           echo "DATABASE_PORT=${{ vars.DATABASE_PORT }}" >> .env
+          echo "DATABASE_POOL_MAX=${{ vars.DATABASE_POOL_MAX }}" >> .env
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
