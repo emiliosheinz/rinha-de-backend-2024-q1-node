@@ -1,4 +1,5 @@
 import {
+  Inject,
   Injectable,
   NotFoundException,
   UnprocessableEntityException,
@@ -7,14 +8,28 @@ import { CreateTransactionDto } from './transaction/create-transaction.dto';
 import { CustomerService } from './customer/customer.service';
 import { TransactionService } from './transaction/transaction.service';
 import { DbService } from './db/db.service';
+import { DATABASE_CONNECTION } from './db/db.constants';
+import { Database } from './db/db.types';
 
 @Injectable()
 export class AppService {
   constructor(
+    @Inject(DATABASE_CONNECTION) private db: Database,
     private customerService: CustomerService,
     private transactionService: TransactionService,
     private dbService: DbService,
-  ) {}
+  ) {
+    this.startDbClients();
+  }
+
+  private async startDbClients() {
+    const promisedConnections = Array.from(
+      { length: parseInt(process.env.DATABASE_POOL_MAX, 10) },
+      () => this.db.connect(),
+    );
+    const connections = await Promise.all(promisedConnections);
+    connections.forEach((connection) => connection.release());
+  }
 
   async createTransaction(customerId: number, dto: CreateTransactionDto) {
     this.checkCustomerExists(customerId);
